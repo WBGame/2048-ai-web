@@ -285,4 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
     stopAI();
     originalNewGame();
   };
+  
+  // 初始化游戏
+  newGame();
 });
