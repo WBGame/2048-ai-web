@@ -299,9 +299,11 @@ function render(mergedCells = new Set()) {
   // 显示/隐藏覆盖层
   if (state.over) {
     elOverMsg.textContent = '游戏结束！';
+    document.getElementById('final-score').textContent = state.score;
     elOverlay.classList.remove('hidden');
   } else if (state.won && !state.keepPlaying) {
     elOverMsg.textContent = '🎉 你赢了！';
+    document.getElementById('final-score').textContent = state.score;
     elOverlay.classList.remove('hidden');
   } else {
     elOverlay.classList.add('hidden');
