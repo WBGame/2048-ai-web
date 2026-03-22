@@ -615,3 +615,7 @@ footer p {
   margin: 0 8px;
   color: #ccc;
 }
+
+/* ── 通用隐藏类 ────────────────────────────────── */
+.hidden { display: none !important; }
+
