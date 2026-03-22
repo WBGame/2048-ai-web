@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#faf8ef" />
+  <title>2048</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="title-row">
+        <h1>2048</h1>
+        <div class="scores">
+          <div class="score-box">
+            <span class="score-label">分数</span>
+            <span class="score-value" id="score">0</span>
+          </div>
+          <div class="score-box">
+            <span class="score-label">最高</span>
+            <span class="score-value" id="best">0</span>
+          </div>
+        </div>
+      </div>
+      <div class="action-row">
+        <p class="hint">合并相同数字，达到 <strong>2048</strong>！</p>
+        <div class="btn-group">
+          <button id="btn-mute" aria-label="静音">🔊</button>
+          <button id="btn-ai" aria-label="AI 自动">🤖 AI</button>
+          <button id="btn-new" aria-label="新游戏">新游戏</button>
+        </div>
+      </div>
+      <div class="ai-status" id="ai-status" hidden>
+        <span>AI 思考：</span>
+        <span id="ai-hint" class="ai-hint-dir"></span>
+      </div>
+    </header>
+
+    <main class="board-wrapper">
+      <!-- 背景格子 -->
+      <div class="grid-bg" aria-hidden="true">
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+      </div>
+
+      <!-- 动态瓦片层 -->
+      <div class="tile-layer" id="tile-layer" aria-live="polite"></div>
+
+      <!-- 游戏结束覆盖层 -->
+      <div class="overlay hidden" id="overlay">
+        <div class="overlay-card">
+          <p class="overlay-msg" id="overlay-msg"></p>
+          <button id="btn-overlay">再来一局</button>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>方向键 / WASD 移动 &nbsp;·&nbsp; 手机左右上下滑动</p>
+    </footer>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

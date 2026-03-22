@@ -1,0 +1,311 @@
+/* ── CSS 变量 ─────────────────────────────────── */
+:root {
+  --board-size: clamp(280px, 90vw, 480px);
+  --gap: clamp(8px, 2vw, 12px);
+  --pad: clamp(8px, 2vw, 12px);
+  --cell-size: calc((var(--board-size) - var(--pad) * 2 - var(--gap) * 3) / 4);
+  --radius: 6px;
+  --bg: #faf8ef;
+  --board-bg: #bbada0;
+  --cell-bg: rgba(238, 228, 218, 0.35);
+  --text-dark: #776e65;
+  --text-light: #f9f6f2;
+  --score-bg: #bbada0;
+  --btn-bg: #8f7a66;
+  --btn-hover: #9f8b77;
+}
+
+/* ── Reset & 基础 ─────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  transition: background 0.9s ease;
+  color: var(--text-dark);
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none; /* 全局禁止默认滚动，游戏内滑动接管 */
+}
+
+/* ── 布局容器 ─────────────────────────────────── */
+.container {
+  width: var(--board-size);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+/* ── 头部 ─────────────────────────────────────── */
+header { display: flex; flex-direction: column; gap: 8px; }
+
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+h1 {
+  font-size: clamp(2.4rem, 10vw, 3.5rem);
+  font-weight: 700;
+  color: var(--text-dark);
+  line-height: 1;
+}
+
+.scores { display: flex; gap: 8px; }
+
+.score-box {
+  background: var(--score-bg);
+  border-radius: var(--radius);
+  padding: 6px 14px;
+  min-width: 60px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.score-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: #eee4da;
+  letter-spacing: 0.05em;
+}
+
+.score-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.hint { font-size: 0.85rem; color: var(--text-dark); }
+.hint strong { color: var(--text-dark); }
+
+button {
+  background: var(--btn-bg);
+  color: #f9f6f2;
+  border: none;
+  border-radius: var(--radius);
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+button:hover { background: var(--btn-hover); }
+button:active { transform: scale(0.97); }
+
+/* ── 棋盘 ─────────────────────────────────────── */
+.board-wrapper {
+  position: relative;
+  width: var(--board-size);
+  height: var(--board-size);
+  flex-shrink: 0;
+}
+
+.grid-bg {
+  position: absolute;
+  inset: 0;
+  background: var(--board-bg);
+  border-radius: var(--radius);
+  padding: var(--pad);
+  display: grid;
+  grid-template-columns: repeat(4, var(--cell-size));
+  grid-template-rows: repeat(4, var(--cell-size));
+  gap: var(--gap);
+}
+
+.grid-cell {
+  background: var(--cell-bg);
+  border-radius: calc(var(--radius) - 2px);
+}
+
+/* ── 瓦片层 ───────────────────────────────────── */
+.tile-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.tile {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: calc(var(--radius) - 2px);
+  font-weight: 700;
+  font-size: clamp(1rem, 5vw, 2.2rem);
+  width: var(--cell-size);
+  height: var(--cell-size);
+  /* transition: top 0.1s ease, left 0.1s ease; */
+}
+
+/* 新瓦片弹出动画 */
+@keyframes tile-appear {
+  0%   { transform: scale(0);   opacity: 0; }
+  70%  { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+/* 合并瓦片弹跳动画 */
+@keyframes tile-pop {
+  0%   { transform: scale(1);   }
+  40%  { transform: scale(1.2); }
+  100% { transform: scale(1);   }
+}
+
+.tile-new    { animation: tile-appear 0.15s ease both; }
+.tile-merged { animation: tile-pop    0.12s ease both; }
+
+/* ── 瓦片配色（经典 2048 色彩方案）─────────────── */
+.t2    { background: #eee4da; color: #776e65; }
+.t4    { background: #ede0c8; color: #776e65; }
+.t8    { background: #f2b179; color: #f9f6f2; }
+.t16   { background: #f59563; color: #f9f6f2; }
+.t32   { background: #f67c5f; color: #f9f6f2; }
+.t64   { background: #f65e3b; color: #f9f6f2; }
+.t128  { background: #edcf72; color: #f9f6f2; font-size: clamp(0.85rem, 4vw, 1.8rem); }
+.t256  { background: #edcc61; color: #f9f6f2; font-size: clamp(0.85rem, 4vw, 1.8rem); }
+.t512  { background: #edc850; color: #f9f6f2; font-size: clamp(0.85rem, 4vw, 1.8rem); }
+.t1024 { background: #edc53f; color: #f9f6f2; font-size: clamp(0.75rem, 3.5vw, 1.5rem); }
+.t2048 { background: #edc22e; color: #f9f6f2; font-size: clamp(0.75rem, 3.5vw, 1.5rem); }
+.tsuper {
+  background: #3c3a32; color: #f9f6f2;
+  font-size: clamp(0.6rem, 3vw, 1.2rem);
+}
+
+/* ── 覆盖层 ───────────────────────────────────── */
+.overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  background: rgba(238, 228, 218, 0.73);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fade-in 0.3s ease;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.overlay.hidden { display: none; }
+
+.overlay-card {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.overlay-msg {
+  font-size: clamp(1.4rem, 6vw, 2.2rem);
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+#btn-overlay {
+  font-size: 1rem;
+  padding: 10px 24px;
+}
+
+/* ── 页脚 ─────────────────────────────────────── */
+footer p {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #a09088;
+}
+
+/* ── 按钮组 ───────────────────────────────────── */
+.btn-group {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+#btn-mute {
+  padding: 8px 10px;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+#btn-ai {
+  background: var(--btn-bg);
+}
+
+#btn-ai.ai-active {
+  background: #5a9f5a;
+}
+#btn-ai.ai-active:hover {
+  background: #6ab56a;
+}
+
+/* ── AI 状态栏 ────────────────────────────────── */
+.ai-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text-dark);
+  background: rgba(187, 173, 160, 0.25);
+  border-radius: var(--radius);
+  padding: 4px 10px;
+}
+
+.ai-hint-dir {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #5a9f5a;
+  letter-spacing: 0.05em;
+}
+
+/* ── 粒子爆炸 ─────────────────────────────────── */
+@keyframes particle-burst {
+  0%   { transform: translate(0, 0) scale(1); opacity: 0.9; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+
+.particle {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: particle-burst 0.42s ease-out both;
+  z-index: 25;
+}
+
+/* ── 飘字动画 ─────────────────────────────────── */
+@keyframes score-float {
+  0%   { transform: translateY(0); opacity: 1; }
+  70%  { opacity: 1; }
+  100% { transform: translateY(-52px); opacity: 0; }
+}
+
+.score-popup {
+  position: absolute;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-dark);
+  pointer-events: none;
+  animation: score-float 0.75s ease-out both;
+  z-index: 30;
+  white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(255,255,255,0.6);
+}
