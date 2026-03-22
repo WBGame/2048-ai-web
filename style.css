@@ -309,3 +309,309 @@ footer p {
   white-space: nowrap;
   text-shadow: 0 1px 3px rgba(255,255,255,0.6);
 }
+
+/* ═══════════════════════════════════════════════════
+   新增样式：AI配置、排行榜、帮助
+   ═══════════════════════════════════════════════════ */
+
+/* ── AI 控制栏 ─────────────────────────────────── */
+.ai-control-panel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 0;
+}
+
+.ai-badge {
+  font-size: 0.4em;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+.btn-ai {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  font-weight: 600;
+}
+
+.btn-ai:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-ai.active {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 87, 108, 0.4); }
+  50% { box-shadow: 0 0 0 10px rgba(245, 87, 108, 0); }
+}
+
+.btn-config, .btn-mute, .btn-rank {
+  padding: 10px;
+  font-size: 1.1rem;
+}
+
+.btn-mute.muted {
+  opacity: 0.5;
+}
+
+.ai-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(102, 126, 234, 0.1);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: #667eea;
+}
+
+.ai-dot {
+  width: 8px;
+  height: 8px;
+  background: #667eea;
+  border-radius: 50%;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ── AI 配置面板 ──────────────────────────────── */
+.config-panel, .rank-panel {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+.config-panel h3, .rank-panel h3 {
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+  color: var(--text-dark);
+}
+
+.config-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.config-item label {
+  flex: 0 0 100px;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+}
+
+.config-item input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 6px;
+  background: #ddd;
+  border-radius: 3px;
+  outline: none;
+}
+
+.config-item input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.config-item input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.config-value {
+  flex: 0 0 40px;
+  text-align: center;
+  font-weight: 600;
+  color: #667eea;
+}
+
+.config-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  flex: 1;
+}
+
+.btn-secondary {
+  background: #e0e0e0 !important;
+  color: var(--text-dark) !important;
+  flex: 1;
+}
+
+/* ── 排行榜 ───────────────────────────────────── */
+.rank-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.rank-tab {
+  flex: 1;
+  background: #f0f0f0;
+  color: var(--text-dark);
+  padding: 10px;
+  font-size: 0.85rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.rank-tab.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.rank-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.rank-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.rank-number {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  border-radius: 50%;
+  font-weight: 700;
+}
+
+.rank-item:nth-child(1) .rank-number {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  color: white;
+}
+
+.rank-item:nth-child(2) .rank-number {
+  background: linear-gradient(135deg, #C0C0C0 0%, #A0A0A0 100%);
+  color: white;
+}
+
+.rank-item:nth-child(3) .rank-number {
+  background: linear-gradient(135deg, #CD7F32 0%, #B87333 100%);
+  color: white;
+}
+
+.rank-score {
+  flex: 1;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.rank-time {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+/* ── 弹窗 ─────────────────────────────────────── */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  padding: 28px;
+  max-width: 90%;
+  width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.help-section {
+  margin-bottom: 16px;
+}
+
+.help-section h4 {
+  color: #667eea;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.help-section p {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.btn-close {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  background: #f0f0f0;
+  color: var(--text-dark);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* ── 页脚 ─────────────────────────────────────── */
+.footer-links {
+  text-align: center;
+  margin-top: 8px;
+}
+
+.footer-links a {
+  color: #667eea;
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+.footer-links span {
+  margin: 0 8px;
+  color: #ccc;
+}

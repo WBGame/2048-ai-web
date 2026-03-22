@@ -4,14 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#faf8ef" />
-  <title>2048</title>
+  <title>2048 AI版</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
     <header>
       <div class="title-row">
-        <h1>2048</h1>
+        <h1>2048 <span class="ai-badge">AI</span></h1>
         <div class="scores">
           <div class="score-box">
             <span class="score-label">分数</span>
@@ -23,58 +23,142 @@
           </div>
         </div>
       </div>
-      <div class="action-row">
-        <p class="hint">合并相同数字，达到 <strong>2048</strong>！</p>
-        <div class="btn-group">
-          <button id="btn-mute" aria-label="静音">🔊</button>
-          <button id="btn-ai" aria-label="AI 自动">🤖 AI</button>
-          <button id="btn-new" aria-label="新游戏">新游戏</button>
+      
+      <!-- AI 控制栏 -->
+      <div class="ai-control-panel">
+        <button id="btn-ai" class="btn-ai" aria-label="AI 自动">
+          <span class="ai-icon">🤖</span>
+          <span class="ai-text">AI 自动</span>
+        </button>
+        <button id="btn-config" class="btn-config" aria-label="AI 配置">
+          ⚙️
+        </button>
+        <button id="btn-mute" class="btn-mute" aria-label="静音">🔊</button>
+        <button id="btn-rank" class="btn-rank" aria-label="排行榜">🏆</button>
+        <div class="ai-status" id="ai-status" hidden>
+          <span class="ai-dot"></span>
+          <span class="ai-direction" id="ai-direction">思考中...</span>
         </div>
       </div>
-      <div class="ai-status" id="ai-status" hidden>
-        <span>AI 思考：</span>
-        <span id="ai-hint" class="ai-hint-dir"></span>
-      </div>
     </header>
+
+    <!-- AI 配置面板 -->
+    <div class="config-panel hidden" id="config-panel">
+      <h3>🎛️ AI 配置中心</h3>
+      <div class="config-item">
+        <label>思考深度 (1-5步)</label>
+        <input type="range" id="config-depth" min="1" max="5" value="3">
+        <span class="config-value" id="depth-value">3</span>
+      </div>
+      <div class="config-item">
+        <label>角落权重</label>
+        <input type="range" id="config-corner" min="0" max="100" value="70">
+        <span class="config-value" id="corner-value">70</span>
+      </div>
+      <div class="config-item">
+        <label>空格权重</label>
+        <input type="range" id="config-empty" min="0" max="100" value="50">
+        <span class="config-value" id="empty-value">50</span>
+      </div>
+      <div class="config-item">
+        <label>单调性权重</label>
+        <input type="range" id="config-mono" min="0" max="100" value="40">
+        <span class="config-value" id="mono-value">40</span>
+      </div>
+      <div class="config-actions">
+        <button id="btn-save-config" class="btn-primary">保存配置</button>
+        <button id="btn-reset-config" class="btn-secondary">恢复默认</button>
+      </div>
+    </div>
+
+    <!-- 排行榜面板 -->
+    <div class="rank-panel hidden" id="rank-panel">
+      <h3>🏆 排行榜</h3>
+      <div class="rank-tabs">
+        <button class="rank-tab active" data-tab="local">本机记录</button>
+        <button class="rank-tab" data-tab="history">历史记录</button>
+      </div>
+      <div class="rank-list" id="rank-list">
+        <!-- 动态生成 -->
+      </div>
+      <button id="btn-close-rank" class="btn-close">关闭</button>
+    </div>
 
     <main class="board-wrapper">
       <!-- 背景格子 -->
       <div class="grid-bg" aria-hidden="true">
-        <div class="grid-cell"></div>
-        <div class="grid-cell"></div>
-        <div class="grid-cell"></div>
-        <div class="grid-cell"></div>
-        <div class="grid-cell"></div>
-        <div class="grid-cell"></div>
-        <div class="grid-cell"></div>
-        <div class="grid-cell"></div>
-        <div class="grid-cell"></div>
-        <div class="grid-cell"></div>
-        <div class="grid-cell"></div>
-        <div class="grid-cell"></div>
-        <div class="grid-cell"></div>
-        <div class="grid-cell"></div>
-        <div class="grid-cell"></div>
-        <div class="grid-cell"></div>
+        <div class="grid-cell"></div><div class="grid-cell"></div>
+        <div class="grid-cell"></div><div class="grid-cell"></div>
+        <div class="grid-cell"></div><div class="grid-cell"></div>
+        <div class="grid-cell"></div><div class="grid-cell"></div>
+        <div class="grid-cell"></div><div class="grid-cell"></div>
+        <div class="grid-cell"></div><div class="grid-cell"></div>
+        <div class="grid-cell"></div><div class="grid-cell"></div>
+        <div class="grid-cell"></div><div class="grid-cell"></div>
       </div>
 
       <!-- 动态瓦片层 -->
       <div class="tile-layer" id="tile-layer" aria-live="polite"></div>
 
+      <!-- 粒子容器 -->
+      <div class="particle-layer" id="particle-layer"></div>
+
+      <!-- 分数飘字容器 -->
+      <div class="float-layer" id="float-layer"></div>
+
       <!-- 游戏结束覆盖层 -->
       <div class="overlay hidden" id="overlay">
         <div class="overlay-card">
           <p class="overlay-msg" id="overlay-msg"></p>
-          <button id="btn-overlay">再来一局</button>
+          <div class="overlay-score">
+            <span>本局得分: </span>
+            <span id="final-score">0</span>
+          </div>
+          <div class="overlay-buttons">
+            <button id="btn-new-game" class="btn-primary">再来一局</button>
+            <button id="btn-save-score" class="btn-secondary">保存成绩</button>
+          </div>
         </div>
       </div>
     </main>
 
     <footer>
-      <p>方向键 / WASD 移动 &nbsp;·&nbsp; 手机左右上下滑动</p>
+      <p>方向键 / WASD 移动 · 手机滑动 · 🤖 AI自动玩 · ⚙️ 配置AI</p>
+      <p class="footer-links">
+        <a href="https://github.com/WBGame/2048-ai-web" target="_blank">📄 GitHub</a>
+        <span>·</span>
+        <a href="#" id="link-help">❓ 帮助</a>
+      </p>
     </footer>
   </div>
 
+  <!-- 帮助弹窗 -->
+  <div class="modal hidden" id="help-modal">
+    <div class="modal-content">
+      <h3>🎮 游戏帮助</h3>
+      <div class="help-section">
+        <h4>基础操作</h4>
+        <p>• 方向键 / WASD：移动方块</p>
+        <p>• 手机：滑动屏幕</p>
+        <p>• 相同数字碰撞会合并</p>
+      </div>
+      <div class="help-section">
+        <h4>AI 模式</h4>
+        <p>• 点击 🤖 AI自动：开启AI自动玩</p>
+        <p>• 点击 ⚙️ 配置：调整AI策略</p>
+        <p>• 思考深度：AI预判的步数</p>
+        <p>• 权重参数：影响AI的决策偏好</p>
+      </div>
+      <div class="help-section">
+        <h4>排行榜</h4>
+        <p>• 本机记录：保存你的最高分</p>
+        <p>• 历史记录：查看最近的游戏</p>
+      </div>
+      <button id="btn-close-help" class="btn-close">知道了</button>
+    </div>
+  </div>
+
   <script src="game.js"></script>
+  <script src="game-ext.js"></script>
 </body>
 </html>
