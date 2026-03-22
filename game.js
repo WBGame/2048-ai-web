@@ -665,7 +665,7 @@ let aiInterval = null;
 const DIR_LABEL = { left: '⬅ 左', right: '➡ 右', up: '⬆ 上', down: '⬇ 下' };
 
 const elBtnAI    = document.getElementById('btn-ai');
-const elAIHint   = document.getElementById('ai-hint');
+const elAIHint   = document.getElementById('ai-direction');
 const elAIStatus = document.getElementById('ai-status');
 
 function aiStep() {
