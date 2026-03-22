@@ -360,15 +360,20 @@ document.addEventListener('touchend', e => {
 }, { passive: true });
 
 // ── 按钮 ──────────────────────────────────────────
-document.getElementById('btn-new').addEventListener('click', newGame);
+// 新游戏按钮（游戏结束弹窗中的"再来一局"）
+document.getElementById('btn-new-game').addEventListener('click', newGame);
 
-document.getElementById('btn-overlay').addEventListener('click', () => {
-  if (state.won && !state.over) {
-    // 赢了但棋盘未满 → 继续游戏
-    state.keepPlaying = true;
-    elOverlay.classList.add('hidden');
-  } else {
-    newGame();
+// 覆盖层点击处理（游戏结束或获胜时）
+document.getElementById('overlay').addEventListener('click', (e) => {
+  // 只有点击覆盖层本身才触发，不触发子元素
+  if (e.target === elOverlay) {
+    if (state.won && !state.over) {
+      // 赢了但棋盘未满 → 继续游戏
+      state.keepPlaying = true;
+      elOverlay.classList.add('hidden');
+    } else {
+      newGame();
+    }
   }
 });
 
